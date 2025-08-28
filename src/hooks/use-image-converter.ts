@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { showAlert, validateImageFile } from "../utils/imageUtils";
+import { showAlert, validateImageFile } from "../utils/image-utils";
 
 export const useImageConverter = () => {
   const [canvasDataUrl, setCanvasDataUrl] = useState("");

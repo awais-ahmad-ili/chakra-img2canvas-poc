@@ -1,5 +1,6 @@
 import { Box, Button, Heading, Text, VStack } from "@chakra-ui/react";
 import { type RefObject } from "react";
+import { downloadCanvas } from "../utils/image-utils";
 
 interface CanvasOutputProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;

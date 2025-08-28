@@ -1,1 +1,1 @@
-export { useImageConverter } from "./useImageConverter";
+export { useImageConverter } from "./use-image-converter";
