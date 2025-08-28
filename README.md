@@ -1,89 +1,101 @@
 # Image to Canvas Converter
 
-A React application that converts images to canvas elements, supporting both URL input and file uploads.
+A React application that converts images from URLs or file uploads to canvas format, with CORS bypass using a proxy server.
 
 ## Features
 
-- **URL Input**: Convert images from URLs
-- **File Upload**: Upload and convert local image files
-- **Real-time Preview**: See the input image before conversion
-- **Canvas Output**: View the converted canvas
-- **Download**: Download the canvas as a PNG file
-- **CORS Handling**: Smart handling of cross-origin image restrictions
+- ✅ **URL Image Loading**: Load images from URLs via proxy server
+- ✅ **File Upload**: Upload and convert local image files
+- ✅ **Canvas Rendering**: Convert images to canvas format
+- ✅ **Download**: Download converted images as PNG
+- ✅ **CORS Bypass**: Uses hosted proxy server to avoid CORS issues
+- ✅ **Chakra UI**: Modern, accessible UI components
 
-## Project Structure
+## Setup
 
-```
-src/
-├── components/          # Reusable UI components
-│   ├── ImageInput.tsx   # Input section with URL and file upload
-│   ├── CanvasOutput.tsx # Canvas display and download
-│   ├── provider.tsx     # Chakra UI theme provider
-│   └── index.ts         # Component exports
-├── hooks/               # Custom React hooks
-│   ├── useImageConverter.ts # Main business logic hook
-│   └── index.ts         # Hook exports
-├── types/               # TypeScript type definitions
-│   └── image.ts         # Image-related types
-├── utils/               # Utility functions
-│   ├── imageUtils.ts    # Image processing utilities
-│   └── index.ts         # Utility exports
-├── App.tsx              # Main application component
-└── main.tsx             # Application entry point
+### 1. Install Dependencies
+
+```bash
+npm install
 ```
 
-## Architecture
+### 2. Environment Variables
 
-### Components
+Create a `.env` file in the root directory:
 
-- **ImageInput**: Handles URL input, file upload, and preview
-- **CanvasOutput**: Displays canvas and download functionality
-- **Provider**: Chakra UI theme configuration
+```bash
+VITE_PROXY_BASE_URL=https://your-vercel-app.vercel.app
+```
 
-### Hooks
+**Replace `https://your-vercel-app.vercel.app` with your actual Vercel proxy server URL.**
 
-- **useImageConverter**: Main business logic for image conversion
+### 3. Start Development Server
 
-### Utilities
+```bash
+npm run dev
+```
 
-- **imageUtils**: Helper functions for image processing and alerts
+## Environment Variables
 
-### Types
+### Vite Environment Variables
 
-- **ImageSource**: Type definitions for image sources
-- **ActiveSource**: Type for tracking active input source
+- **`VITE_PROXY_BASE_URL`**: Your hosted proxy server URL
+  - Example: `https://my-proxy-server.vercel.app`
+  - Used to bypass CORS restrictions when loading images from URLs
+
+### How Vite Environment Variables Work
+
+- **Prefix**: All environment variables must start with `VITE_`
+- **Access**: Use `import.meta.env.VITE_VARIABLE_NAME`
+- **Build-time**: Variables are embedded at build time
+- **Security**: Only `VITE_` prefixed variables are exposed to the client
 
 ## Usage
 
-1. **Enter Image URL**: Type an image URL and click "Convert"
-2. **Upload File**: Select an image file from your device
-3. **Preview**: See the selected image before conversion
-4. **Convert**: The image is converted to a canvas element
-5. **Download**: Download the canvas as a PNG file
+1. **Load from URL**: Enter an image URL and click "Convert"
+2. **Upload File**: Click "Choose File" to upload a local image
+3. **View Canvas**: The converted image appears in the canvas
+4. **Download**: Click "Download" to save the canvas as PNG
 
-## Technical Details
+## Architecture
 
-- **Framework**: React with TypeScript
-- **UI Library**: Chakra UI
-- **Build Tool**: Vite
-- **Image Processing**: HTML5 Canvas API
-- **CORS Handling**: Smart fallback for cross-origin images
+### Hooks
+
+- **`useImageLoader`**: Handles loading images from URLs/files to data URLs
+- **`useCanvasRenderer`**: Renders data URLs to canvas and manages canvas state
+
+### Components
+
+- **`ImageInput`**: URL input and file upload interface
+- **`CanvasOutput`**: Canvas display and download functionality
+
+## Proxy Server
+
+This app requires a hosted proxy server to bypass CORS restrictions. The proxy server should:
+
+- **Endpoint**: `/proxy?url={image_url}`
+- **Response**: `{dataUrl: "data:image/..."}`
+- **Hosting**: Deployed on Vercel, Render, or similar platform
 
 ## Development
 
 ```bash
-# Install dependencies
-npm install
-
 # Start development server
 npm run dev
 
 # Build for production
 npm run build
+
+# Preview production build
+npm run preview
+
+# Lint code
+npm run lint
 ```
 
-## Browser Compatibility
+## Technologies
 
-- Modern browsers with HTML5 Canvas support
-- File API support for uploads
-- Fetch API for URL processing
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **Chakra UI** for components
+- **HTML5 Canvas API** for image processing

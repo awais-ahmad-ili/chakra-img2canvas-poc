@@ -1,34 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Container, Heading, VStack, HStack } from "@chakra-ui/react";
 import { ImageInput, CanvasOutput } from "./components";
-import { useImageConverter } from "./hooks";
-import { downloadCanvas } from "./utils";
+import { useImageLoader, useCanvasRenderer } from "./hooks";
 
 function App() {
   const [imageUrl, setImageUrl] = useState("");
   const [uploadedImage, setUploadedImage] = useState<File | null>(null);
   const [activeSource, setActiveSource] = useState<"url" | "file" | null>(null);
 
-  const {
-    convertFromUrl,
-    convertFromFile,
-    canvasDataUrl,
-    isLoading,
-    canvasRef,
-  } = useImageConverter();
+  const { dataUrl, isLoading, loadFromUrl, loadFromFile } = useImageLoader();
 
-  const handleUrlSubmit = () => {
+  const {
+    canvasDataUrl,
+    isRendering,
+    canvasRef,
+    renderToCanvas,
+    downloadCanvas,
+  } = useCanvasRenderer();
+
+  const handleUrlSubmit = async () => {
     setActiveSource("url");
-    convertFromUrl(imageUrl);
+    await loadFromUrl(imageUrl);
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     setUploadedImage(file);
     setActiveSource("file");
-    convertFromFile(file);
+    await loadFromFile(file);
   };
 
   const getPreviewSrc = () => {
@@ -42,8 +45,15 @@ function App() {
   };
 
   const handleDownload = () => {
-    downloadCanvas(canvasDataUrl);
+    downloadCanvas();
   };
+
+  // Auto-render to canvas when dataUrl changes
+  useEffect(() => {
+    if (dataUrl) {
+      renderToCanvas(dataUrl);
+    }
+  }, [dataUrl, renderToCanvas]);
 
   return (
     <Container py={8} w="full">
@@ -55,7 +65,7 @@ function App() {
         <HStack gap={8} align="flex-start">
           <ImageInput
             imageUrl={imageUrl}
-            isLoading={isLoading}
+            isLoading={isLoading || isRendering}
             previewSrc={getPreviewSrc()}
             onUrlChange={setImageUrl}
             onUrlSubmit={handleUrlSubmit}
