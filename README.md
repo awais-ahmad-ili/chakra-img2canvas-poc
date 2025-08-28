@@ -1,69 +1,89 @@
-# React + TypeScript + Vite
+# Image to Canvas Converter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application that converts images to canvas elements, supporting both URL input and file uploads.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **URL Input**: Convert images from URLs
+- **File Upload**: Upload and convert local image files
+- **Real-time Preview**: See the input image before conversion
+- **Canvas Output**: View the converted canvas
+- **Download**: Download the canvas as a PNG file
+- **CORS Handling**: Smart handling of cross-origin image restrictions
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ImageInput.tsx   # Input section with URL and file upload
+│   ├── CanvasOutput.tsx # Canvas display and download
+│   ├── provider.tsx     # Chakra UI theme provider
+│   └── index.ts         # Component exports
+├── hooks/               # Custom React hooks
+│   ├── useImageConverter.ts # Main business logic hook
+│   └── index.ts         # Hook exports
+├── types/               # TypeScript type definitions
+│   └── image.ts         # Image-related types
+├── utils/               # Utility functions
+│   ├── imageUtils.ts    # Image processing utilities
+│   └── index.ts         # Utility exports
+├── App.tsx              # Main application component
+└── main.tsx             # Application entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Architecture
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Components
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **ImageInput**: Handles URL input, file upload, and preview
+- **CanvasOutput**: Displays canvas and download functionality
+- **Provider**: Chakra UI theme configuration
+
+### Hooks
+
+- **useImageConverter**: Main business logic for image conversion
+
+### Utilities
+
+- **imageUtils**: Helper functions for image processing and alerts
+
+### Types
+
+- **ImageSource**: Type definitions for image sources
+- **ActiveSource**: Type for tracking active input source
+
+## Usage
+
+1. **Enter Image URL**: Type an image URL and click "Convert"
+2. **Upload File**: Select an image file from your device
+3. **Preview**: See the selected image before conversion
+4. **Convert**: The image is converted to a canvas element
+5. **Download**: Download the canvas as a PNG file
+
+## Technical Details
+
+- **Framework**: React with TypeScript
+- **UI Library**: Chakra UI
+- **Build Tool**: Vite
+- **Image Processing**: HTML5 Canvas API
+- **CORS Handling**: Smart fallback for cross-origin images
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
 ```
+
+## Browser Compatibility
+
+- Modern browsers with HTML5 Canvas support
+- File API support for uploads
+- Fetch API for URL processing

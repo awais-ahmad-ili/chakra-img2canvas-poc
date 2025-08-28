@@ -1,34 +1,75 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { Container, Heading, VStack, HStack } from "@chakra-ui/react";
+import { ImageInput, CanvasOutput } from "./components";
+import { useImageConverter } from "./hooks";
+import { downloadCanvas } from "./utils";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [imageUrl, setImageUrl] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<File | null>(null);
+  const [activeSource, setActiveSource] = useState<"url" | "file" | null>(null);
+
+  const {
+    convertFromUrl,
+    convertFromFile,
+    canvasDataUrl,
+    isLoading,
+    canvasRef,
+  } = useImageConverter();
+
+  const handleUrlSubmit = () => {
+    setActiveSource("url");
+    convertFromUrl(imageUrl);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadedImage(file);
+    setActiveSource("file");
+    convertFromFile(file);
+  };
+
+  const getPreviewSrc = () => {
+    if (activeSource === "file" && uploadedImage) {
+      return URL.createObjectURL(uploadedImage);
+    }
+    if (activeSource === "url" && imageUrl) {
+      return imageUrl;
+    }
+    return "";
+  };
+
+  const handleDownload = () => {
+    downloadCanvas(canvasDataUrl);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Container py={8} w="full">
+      <VStack gap={8} align="stretch">
+        <Heading as="h1" size="2xl" textAlign="center">
+          Image to Canvas Converter
+        </Heading>
+
+        <HStack gap={8} align="flex-start">
+          <ImageInput
+            imageUrl={imageUrl}
+            isLoading={isLoading}
+            previewSrc={getPreviewSrc()}
+            onUrlChange={setImageUrl}
+            onUrlSubmit={handleUrlSubmit}
+            onFileUpload={handleFileUpload}
+          />
+
+          <CanvasOutput
+            canvasRef={canvasRef}
+            canvasDataUrl={canvasDataUrl}
+            onDownload={handleDownload}
+          />
+        </HStack>
+      </VStack>
+    </Container>
   );
 }
 
